@@ -1,7 +1,7 @@
 /*!
  * angular-ui-mask
  * https://github.com/angular-ui/ui-mask
- * Version: 1.8.7 - 2016-07-26T15:59:07.992Z
+ * Version: 1.8.7 - 2016-12-16T13:23:58.004Z
  * License: MIT
  */
 
@@ -59,7 +59,7 @@ angular.module('ui.mask', [])
                 return tempOptions;
             }];
         })
-        .directive('uiMask', ['uiMask.Config', function(maskConfig) {
+        .directive('uiMask', ['uiMask.Config', '$timeout', function(maskConfig, $timeout) {
                 function isFocused (elem) {
                   return elem === document.activeElement && (!document.hasFocus || document.hasFocus()) && !!(elem.type || elem.href || ~elem.tabIndex);
                 }
@@ -556,6 +556,8 @@ angular.module('ui.mask', [])
 
                             function eventHandler(e) {
                                 /*jshint validthis: true */
+                                var self = this;
+
                                 e = e || {};
                                 // Allows more efficient minification
                                 var eventWhich = e.which,
@@ -681,6 +683,13 @@ angular.module('ui.mask', [])
                                 }
                                 oldCaretPosition = caretPos;
                                 setCaretPosition(this, caretPos);
+
+                                $timeout(function() {
+                                    var caretPos = getCaretPosition(iElement[0]);
+                                    if(caretPos < caretPosMin) {
+                                        setCaretPosition(self, caretPosMin);
+                                    }
+                                }, 305);
                             }
 
                             function isValidCaretPosition(pos) {
